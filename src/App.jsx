@@ -17,13 +17,12 @@ export const goodsFromServer = [
 
 const SORT_ABC = 'sortABC';
 const SORT_LENGTH = 'sortLength';
-const REVERSE = 'reverse';
 const RESET = 'reset';
 
 export const App = () => {
   const [goodsOrder, setGoodsOrder] = useState([...goodsFromServer]);
   const [isActive, setIsActive] = useState('');
-  const [previousState, setPreviousState] = useState('');
+  const [isReverse, setIsReverse] = useState(false);
 
   const handleSort = type => {
     let newGoodsOrder = [...goodsOrder];
@@ -72,17 +71,11 @@ export const App = () => {
 
         <button
           type="button"
-          className={`button is-warning ${isActive === REVERSE ? '' : 'is-light'}`}
+          className={`button is-warning ${isReverse ? '' : 'is-light'}`}
           onClick={() => {
             const newGoodsOrder = [...goodsOrder].reverse();
 
-            if (isActive === REVERSE) {
-              setIsActive(previousState);
-            } else {
-              setPreviousState(isActive);
-              setIsActive(REVERSE);
-            }
-
+            setIsReverse(!isReverse);
             setGoodsOrder(newGoodsOrder);
           }}
         >
