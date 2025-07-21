@@ -66,7 +66,7 @@ export const App = () => {
         >
           Reverse
         </button>
-        {visibleGoods.some((item, i) => item !== goodsFromServer[i] || item !== goodsFromServer[goodsFromServer.length - i]) && (
+        {visibleGoods.some((item, i) => item !== goodsFromServer[i]) && (
           <button
             type="button"
             className="button is-danger is-light"
