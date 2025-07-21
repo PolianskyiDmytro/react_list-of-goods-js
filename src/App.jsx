@@ -76,6 +76,7 @@ export const App = () => {
           </button>
         )}
       </div>
+
       <ul>
         {visibleGoods.map(good => (
           <li key={good} data-cy="Good">
