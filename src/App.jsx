@@ -15,39 +15,29 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
-const SORT_ABC = 'sortABC';
-const SORT_LENGTH = 'sortLength';
-const RESET = 'reset';
-
 export const App = () => {
-  const [goodsOrder, setGoodsOrder] = useState([...goodsFromServer]);
-  const [isActive, setIsActive] = useState('');
-  const [isReverse, setIsReverse] = useState(false);
-
-  const handleSort = type => {
-    let newGoodsOrder = [...goodsOrder];
-
-    switch (type) {
+  const [sortField, setSortField] = useState('');
+  const [reversed, setReversed] = useState(false);
+  const SORT_ABC = 'sortABC';
+  const SORT_LENGTH = 'sortLength';
+  let visibleGoods = [...goodsFromServer].sort((good1, good2) => {
+    switch (sortField) {
       case SORT_ABC:
-        newGoodsOrder.sort((a, b) => a.localeCompare(b));
-        setIsActive(SORT_ABC);
-        break;
-
+        return good1.localeCompare(good2);
       case SORT_LENGTH:
-        newGoodsOrder.sort((a, b) => a.length - b.length);
-        setIsActive(SORT_LENGTH);
-        break;
-
-      case RESET:
-        newGoodsOrder = [...goodsFromServer];
-        setIsActive('');
-        break;
-
+        return good1.length - good2.length;
       default:
-        break;
+        return 0;
     }
+  });
 
-    setGoodsOrder(newGoodsOrder);
+  if (reversed) {
+    visibleGoods = visibleGoods.reverse();
+  }
+
+  const reset = () => {
+    setSortField('');
+    setReversed(false);
   };
 
   return (
@@ -55,45 +45,39 @@ export const App = () => {
       <div className="buttons">
         <button
           type="button"
-          className={`button is-info ${isActive === SORT_ABC ? '' : 'is-light'}`}
-          onClick={() => handleSort(SORT_ABC)}
+          className={`button is-info ${sortField === SORT_ABC ? '' : 'is-light'}`}
+          onClick={() => setSortField(SORT_ABC)}
         >
           Sort alphabetically
         </button>
-
         <button
           type="button"
-          className={`button is-success ${isActive === SORT_LENGTH ? '' : 'is-light'}`}
-          onClick={() => handleSort(SORT_LENGTH)}
+          className={`button is-success ${sortField === SORT_LENGTH ? '' : 'is-light'}`}
+          onClick={() => setSortField(SORT_LENGTH)}
         >
           Sort by length
         </button>
-
         <button
           type="button"
-          className={`button is-warning ${isReverse ? '' : 'is-light'}`}
+          className={`button is-warning ${reversed ? '' : 'is-light'}`}
           onClick={() => {
-            const newGoodsOrder = [...goodsOrder].reverse();
-
-            setIsReverse(!isReverse);
-            setGoodsOrder(newGoodsOrder);
+            setReversed(prev => !prev);
           }}
         >
           Reverse
         </button>
-        {goodsOrder.some((item, i) => item !== goodsFromServer[i]) && (
+        {visibleGoods.some((item, i) => item !== goodsFromServer[i]) && (
           <button
             type="button"
             className="button is-danger is-light"
-            onClick={() => handleSort(RESET)}
+            onClick={reset}
           >
             Reset
           </button>
         )}
       </div>
-
       <ul>
-        {goodsOrder.map(good => (
+        {visibleGoods.map(good => (
           <li key={good} data-cy="Good">
             {good}
           </li>
